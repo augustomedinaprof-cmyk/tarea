@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplicación de Polinomios</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+      color: #111827;
+    }
+    header {
+      background: #0f766e;
+      color: white;
+      text-align: center;
+      padding: 24px 14px;
+    }
+    header h1 { margin: 0; font-size: 28px; }
+    header p { margin: 8px 0 0; font-size: 17px; }
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 14px;
+    }
+    section {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 16px 0;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+    h2 {
+      text-align: center;
+      color: #115e59;
+      margin-top: 0;
+    }
+    p, li { font-size: 18px; line-height: 1.5; }
+    .pregunta {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin: 18px 0;
+      color: #111827;
+    }
+    .botonera {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    button {
+      width: 100%;
+      min-height: 58px;
+      font-size: 18px;
+      font-weight: bold;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px;
+      background: #0f766e;
+      color: white;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active {
+      transform: scale(0.98);
+      background: #134e4a;
+    }
+    button:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+    .gris { background: #374151; }
+    .azul { background: #2563eb; }
+    .verde { background: #16a34a !important; }
+    .rojo { background: #dc2626 !important; }
+    .amarillo {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .resultado {
+      min-height: 42px;
+      margin-top: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .oculto { display: none; }
+    .progreso {
+      height: 18px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .barra {
+      height: 100%;
+      width: 0%;
+      background: #22c55e;
+      transition: width .3s;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      margin-top: 12px;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 8px;
+      text-align: left;
+    }
+    th { background: #ccfbf1; }
+    .correcto { color: #15803d; font-weight: bold; }
+    .incorrecto { color: #b91c1c; font-weight: bold; }
+    .config {
+      display: grid;
+      gap: 12px;
+    }
+    select {
+      width: 100%;
+      font-size: 18px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #94a3b8;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #374151;
+      font-size: 15px;
+    }
+    @media (min-width: 720px) {
+      .botonera { grid-template-columns: 1fr 1fr; }
+      .config { grid-template-columns: 1fr 1fr; align-items: end; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Multiplicación de Polinomios</h1>
+    <p>Ejercicios aleatorios con resultados visibles</p>
+  </header>
+
+  <main>
+    <section id="inicio">
+      <h2>Antes de comenzar</h2>
+      <p>
+        En esta actividad vas a practicar multiplicación de polinomios.
+        Los ejercicios se generan de forma aleatoria.
+      </p>
+      <ul>
+        <li>Elegí la opción correcta.</li>
+        <li>Después de responder, verás la explicación.</li>
+        <li>Al finalizar, podrás ver todos los resultados.</li>
+      </ul>
+
+      <div class="config">
+        <div>
+          <p><b>Cantidad de ejercicios:</b></p>
+          <select id="cantidad">
+            <option value="5">5 ejercicios</option>
+            <option value="10" selected>10 ejercicios</option>
+            <option value="15">15 ejercicios</option>
+            <option value="20">20 ejercicios</option>
+          </select>
+        </div>
+        <div>
+          <p><b>Dificultad:</b></p>
+          <select id="dificultad">
+            <option value="facil">Fácil: monomio × binomio</option>
+            <option value="media" selected>Media: binomio × binomio</option>
+            <option value="mixta">Mixta</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="botonera">
+        <button onclick="iniciar()">Comenzar actividad</button>
+        <button class="azul" onclick="probarBotones()">Probar botones</button>
+      </div>
+      <div id="prueba" class="resultado"></div>
+    </section>
+
+    <section id="actividad" class="oculto">
+      <div class="amarillo">
+        Ejercicio <span id="num">1</span> de <span id="total">10</span><br>
+        Puntaje: <span id="puntaje">0</span>
+      </div>
+
+      <div class="progreso">
+        <div id="barra" class="barra"></div>
+      </div>
+
+      <div id="zonaJuego"></div>
+    </section>
+
+    <section id="final" class="oculto">
+      <h2>Resultados finales</h2>
+      <div id="resumen" class="amarillo"></div>
+      <div class="botonera">
+        <button onclick="verTabla()">Ver resultados</button>
+        <button class="gris" onclick="reiniciar()">Nueva actividad</button>
+      </div>
+      <div id="tablaResultados"></div>
+    </section>
+  </main>
+
+  <footer>
+    Recurso educativo interactivo para secundaria.
+  </footer>
+
+<script>
+var ejercicios = [];
+var actual = 0;
+var puntaje = 0;
+var historial = [];
+
+function probarBotones() {
+  document.getElementById("prueba").innerHTML = "✅ Los botones funcionan correctamente.";
+}
+
+function aleatorio(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function signo(n) {
+  return n >= 0 ? " + " + n : " - " + Math.abs(n);
+}
+
+function terminoCoef(coef, variable) {
+  if (coef === 1) return variable;
+  if (coef === -1) return "-" + variable;
+  return coef + variable;
+}
+
+function binomioTexto(a, b) {
+  return "(" + terminoCoef(a, "x") + signo(b) + ")";
+}
+
+function monomioTexto(a) {
+  return terminoCoef(a, "x");
+}
+
+function polinomioCuadraticoTexto(a, b, c) {
+  var texto = "";
+  if (a === 1) texto += "x²";
+  else if (a === -1) texto += "-x²";
+  else texto += a + "x²";
+
+  if (b !== 0) {
+    if (b > 0) texto += " + " + (b === 1 ? "x" : b + "x");
+    else texto += " - " + (Math.abs(b) === 1 ? "x" : Math.abs(b) + "x");
+  }
+
+  if (c !== 0) {
+    if (c > 0) texto += " + " + c;
+    else texto += " - " + Math.abs(c);
+  }
+
+  return texto;
+}
+
+function generarMonomioPorBinomio() {
+  var a = aleatorio(1, 6);
+  var b = aleatorio(1, 6);
+  var c = aleatorio(-6, 6);
+  if (c === 0) c = 2;
+
+  var pregunta = monomioTexto(a) + " · " + binomioTexto(b, c);
+  var rA = a * b;
+  var rB = a * c;
+  var respuesta = polinomioCuadraticoTexto(rA, rB, 0);
+
+  var explicacion = monomioTexto(a) + " multiplica a cada término: " +
+    a + "x · " + b + "x = " + rA + "x² y " +
+    a + "x · " + c + " = " + rB + "x.";
+
+  return crearEjercicio(pregunta, respuesta, explicacion, rA, rB, 0);
+}
+
+function generarBinomioPorBinomio() {
+  var a = aleatorio(1, 5);
+  var b = aleatorio(-6, 6);
+  var c = aleatorio(1, 5);
+  var d = aleatorio(-6, 6);
+
+  if (b === 0) b = 3;
+  if (d === 0) d = -2;
+
+  var pregunta = binomioTexto(a, b) + " · " + binomioTexto(c, d);
+
+  var rA = a * c;
+  var rB = a * d + b * c;
+  var rC = b * d;
+
+  var respuesta = polinomioCuadraticoTexto(rA, rB, rC);
+
+  var explicacion = "Se aplica distributiva: cada término del primer polinomio multiplica a cada término del segundo. Luego se reducen términos semejantes.";
+
+  return crearEjercicio(pregunta, respuesta, explicacion, rA, rB, rC);
+}
+
+function crearEjercicio(pregunta, correcta, explicacion, a, b, c) {
+  var opciones = [];
+  opciones.push(correcta);
+  opciones.push(polinomioCuadraticoTexto(a, b + aleatorio(1, 4), c));
+  opciones.push(polinomioCuadraticoTexto(a + aleatorio(1, 3), b, c));
+  opciones.push(polinomioCuadraticoTexto(a, b, c + aleatorio(1, 5)));
+  opciones = mezclar(opciones);
+
+  return {
+    pregunta: pregunta,
+    correcta: correcta,
+    opciones: opciones,
+    explicacion: explicacion
+  };
+}
+
+function mezclar(array) {
+  var copia = array.slice();
+  for (var i = copia.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = copia[i];
+    copia[i] = copia[j];
+    copia[j] = temp;
+  }
+  return copia;
+}
+
+function iniciar() {
+  ejercicios = [];
+  historial = [];
+  actual = 0;
+  puntaje = 0;
+
+  var cantidad = parseInt(document.getElementById("cantidad").value);
+  var dificultad = document.getElementById("dificultad").value;
+
+  for (var i = 0; i < cantidad; i++) {
+    if (dificultad === "facil") ejercicios.push(generarMonomioPorBinomio());
+    else if (dificultad === "media") ejercicios.push(generarBinomioPorBinomio());
+    else {
+      if (Math.random() < 0.5) ejercicios.push(generarMonomioPorBinomio());
+      else ejercicios.push(generarBinomioPorBinomio());
+    }
+  }
+
+  document.getElementById("inicio").className = "oculto";
+  document.getElementById("final").className = "oculto";
+  document.getElementById("actividad").className = "";
+  document.getElementById("total").innerHTML = ejercicios.length;
+
+  mostrarEjercicio();
+}
+
+function mostrarEjercicio() {
+  var e = ejercicios[actual];
+
+  document.getElementById("num").innerHTML = actual + 1;
+  document.getElementById("puntaje").innerHTML = puntaje;
+  document.getElementById("barra").style.width = (actual / ejercicios.length * 100) + "%";
+
+  var html = "";
+  html += "<h2>Multiplicar</h2>";
+  html += "<div class='pregunta'>" + e.pregunta + "</div>";
+  html += "<div class='botonera'>";
+
+  for (var i = 0; i < e.opciones.length; i++) {
+    html += "<button id='op" + i + "' onclick='responder(" + i + ")'>" + e.opciones[i] + "</button>";
+  }
+
+  html += "</div>";
+  html += "<div id='resultado' class='resultado'></div>";
+  html += "<button id='siguiente' class='gris oculto' onclick='siguiente()'>Siguiente</button>";
+
+  document.getElementById("zonaJuego").innerHTML = html;
+}
+
+function responder(opcion) {
+  var e = ejercicios[actual];
+  var elegida = e.opciones[opcion];
+  var acierto = elegida === e.correcta;
+
+  for (var i = 0; i < e.opciones.length; i++) {
+    document.getElementById("op" + i).disabled = true;
+    if (e.opciones[i] === e.correcta) {
+      document.getElementById("op" + i).className = "verde";
+    }
+  }
+
+  if (acierto) {
+    puntaje++;
+    document.getElementById("resultado").innerHTML = "✅ Correcto. " + e.explicacion;
+  } else {
+    document.getElementById("op" + opcion).className = "rojo";
+    document.getElementById("resultado").innerHTML = "❌ Incorrecto. Resultado correcto: " + e.correcta + ". " + e.explicacion;
+  }
+
+  historial.push({
+    ejercicio: e.pregunta,
+    respuestaAlumno: elegida,
+    respuestaCorrecta: e.correcta,
+    estado: acierto ? "Correcto" : "Incorrecto"
+  });
+
+  document.getElementById("puntaje").innerHTML = puntaje;
+  document.getElementById("siguiente").className = "gris";
+}
+
+function siguiente() {
+  actual++;
+  if (actual >= ejercicios.length) finalizar();
+  else mostrarEjercicio();
+}
+
+function finalizar() {
+  document.getElementById("actividad").className = "oculto";
+  document.getElementById("final").className = "";
+
+  var porcentaje = Math.round((puntaje / ejercicios.length) * 100);
+  var mensaje = "";
+
+  if (porcentaje >= 90) mensaje = "🏆 Excelente. Dominás la multiplicación de polinomios.";
+  else if (porcentaje >= 70) mensaje = "👏 Muy bien. Seguí practicando para mejorar.";
+  else if (porcentaje >= 50) mensaje = "📘 Bien, pero conviene repasar la distributiva.";
+  else mensaje = "💪 Necesitás practicar más. Volvé a intentarlo.";
+
+  document.getElementById("resumen").innerHTML =
+    "Puntaje final: " + puntaje + " de " + ejercicios.length + " (" + porcentaje + "%)<br>" + mensaje;
+
+  verTabla();
+}
+
+function verTabla() {
+  var html = "<table>";
+  html += "<tr><th>N°</th><th>Ejercicio</th><th>Tu respuesta</th><th>Resultado correcto</th><th>Estado</th></tr>";
+
+  for (var i = 0; i < historial.length; i++) {
+    var clase = historial[i].estado === "Correcto" ? "correcto" : "incorrecto";
+    html += "<tr>";
+    html += "<td>" + (i + 1) + "</td>";
+    html += "<td>" + historial[i].ejercicio + "</td>";
+    html += "<td>" + historial[i].respuestaAlumno + "</td>";
+    html += "<td>" + historial[i].respuestaCorrecta + "</td>";
+    html += "<td class='" + clase + "'>" + historial[i].estado + "</td>";
+    html += "</tr>";
+  }
+
+  html += "</table>";
+  document.getElementById("tablaResultados").innerHTML = html;
+}
+
+function reiniciar() {
+  document.getElementById("inicio").className = "";
+  document.getElementById("actividad").className = "oculto";
+  document.getElementById("final").className = "oculto";
+  document.getElementById("tablaResultados").innerHTML = "";
+  document.getElementById("prueba").innerHTML = "";
+}
+</script>
+</body>
+</html>
